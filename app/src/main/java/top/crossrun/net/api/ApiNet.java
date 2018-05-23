@@ -14,7 +14,6 @@ import top.crossrun.net.listener.ApiResultListener;
 public class ApiNet {
 
     /**
-     * 必须在调用之前
      *
      * @param builder
      */
