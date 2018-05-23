@@ -8,7 +8,7 @@ import io.reactivex.schedulers.Schedulers;
 import top.crossrun.net.listener.ApiResultListener;
 import top.crossrun.net.services.StringServices;
 
-public class PostRequest extends Request {
+public class GetRequest extends Request {
 
     Class cls;
 
@@ -20,27 +20,27 @@ public class PostRequest extends Request {
 
     KVParam param;
 
-    public PostRequest() {
+    public GetRequest() {
         requestScheduler = Schedulers.io();
         responseScheduler = AndroidSchedulers.mainThread();
     }
 
-    public PostRequest setRequestScheduler(Scheduler requestScheduler) {
+    public GetRequest setRequestScheduler(Scheduler requestScheduler) {
         this.requestScheduler = requestScheduler;
         return this;
     }
 
-    public PostRequest setResponseScheduler(Scheduler reponseScheduler) {
+    public GetRequest setResponseScheduler(Scheduler reponseScheduler) {
         this.responseScheduler = reponseScheduler;
         return this;
     }
 
-    public PostRequest setApiResultListener(ApiResultListener listener) {
+    public GetRequest setApiResultListener(ApiResultListener listener) {
         this.listener = listener;
         return this;
     }
 
-    public PostRequest setParam(KVParam param) {
+    public GetRequest setParam(KVParam param) {
         this.param = param;
         return this;
     }
@@ -50,14 +50,14 @@ public class PostRequest extends Request {
      *
      * @param cls
      */
-    public PostRequest setCls(Class cls) {
+    public GetRequest setCls(Class cls) {
         this.cls = cls;
         return this;
     }
 
     public void http() {
         ApiNet.getInstance().create(StringServices.class)
-                .post(param.url, param.getValues())
+                .get(param.url, param.getValues())
                 .subscribeOn(requestScheduler)
                 .observeOn(responseScheduler)
                 .subscribe(new Observer<String>() {

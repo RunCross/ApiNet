@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
                         .setUrl("http://igotone.zj.chinamobile.com:88/ZJMOAPortalNew/portal/index.do")
                         .setParam("data", "ECDB7D5A6EFBFC7A7804D8A30BE803062409D17B746798EAB848A9A482DFD620"))
                 .setCls(UpdateResult.class)
-                .setResponseScheduler(AndroidSchedulers.mainThread())
                 .setApiResultListener(new ApiResultListener<UpdateResult>() {
                     @Override
                     public void onRequestResultSucc(UpdateResult result) {

@@ -34,6 +34,10 @@ public class ApiNet {
        return new PostRequest();
     }
 
+    public static <T> GetRequest get() {
+        return new GetRequest();
+    }
+
     public static void get(KVParam param) {
         NetInner.ins.get(param);
     }
@@ -122,7 +126,7 @@ public class ApiNet {
 
     }
 
-    public static Retrofit getInstance(){
+    protected static Retrofit getInstance(){
         return NetInner.ins.getInstance();
     }
 
