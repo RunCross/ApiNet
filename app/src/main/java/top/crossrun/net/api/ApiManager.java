@@ -59,6 +59,10 @@ class ApiManager {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).build();
     }
 
+    public Retrofit getInstance(){
+        return instance;
+    }
+
     public void get(KVParam param) {
         Scheduler request;
         Scheduler response;
@@ -124,7 +128,6 @@ class ApiManager {
                         if (listener==null){
                             return;
                         }
-                        listener.onRequestResultSucc(listener.parse(value));
                     }
 
                     @Override
@@ -132,7 +135,7 @@ class ApiManager {
                         if (listener==null){
                             return;
                         }
-                        listener.onRequestResultFailed(e.getMessage());
+                        listener.onRequestResultFailed(e);
                     }
 
                     @Override

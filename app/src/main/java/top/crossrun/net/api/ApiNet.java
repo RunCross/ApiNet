@@ -8,6 +8,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Interceptor;
+import retrofit2.Retrofit;
 import top.crossrun.net.listener.ApiResultListener;
 
 public class ApiNet {
@@ -27,6 +28,10 @@ public class ApiNet {
 
     public static <T> void post(KVParam param, ApiResultListener listener) {
         NetInner.ins.post(param,listener);
+    }
+
+    public static <T> PostRequest post() {
+       return new PostRequest();
     }
 
     public static void get(KVParam param) {
@@ -115,6 +120,10 @@ public class ApiNet {
             return debug;
         }
 
+    }
+
+    public static Retrofit getInstance(){
+        return NetInner.ins.getInstance();
     }
 
     private static class NetInner {
