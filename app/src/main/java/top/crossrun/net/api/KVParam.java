@@ -8,7 +8,6 @@ import top.crossrun.net.listener.ApiSchedulerListener;
 public class KVParam extends BaseParam {
     Map<String, Object> values;
     String url;
-    ApiSchedulerListener apiSchedulerListener;
 
     public KVParam() {
         values = new HashMap<>();
@@ -28,13 +27,10 @@ public class KVParam extends BaseParam {
         return values;
     }
 
-
-    public ApiSchedulerListener getApiSchedulerListener() {
-        return apiSchedulerListener;
-    }
-
-    public KVParam setApiSchedulerListener(ApiSchedulerListener apiSchedulerListener) {
-        this.apiSchedulerListener = apiSchedulerListener;
-        return this;
+    @Override
+    public void recycle() {
+        url = null;
+        values.clear();
+        values = null;
     }
 }

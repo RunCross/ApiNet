@@ -1,5 +1,7 @@
 package top.crossrun.net.api;
 
-public class BaseParam {
+import top.crossrun.net.interf.RecycleAble;
+
+public abstract class BaseParam implements RecycleAble{
 
 }

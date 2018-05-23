@@ -98,4 +98,10 @@ public class GetRequest extends Request {
                     }
                 });
     }
+
+    @Override
+    public void recycle() {
+        listener = null;
+        param.recycle();
+    }
 }

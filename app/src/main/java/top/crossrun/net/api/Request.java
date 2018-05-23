@@ -1,5 +1,7 @@
 package top.crossrun.net.api;
 
-public abstract class Request {
+import top.crossrun.net.interf.RecycleAble;
+
+public abstract class Request implements RecycleAble{
     public abstract void http();
 }

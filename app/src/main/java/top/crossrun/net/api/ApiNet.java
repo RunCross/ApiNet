@@ -22,24 +22,17 @@ public class ApiNet {
         NetInner.builder = builder;
     }
 
-    public static void http() {
-    }
-
-    public static <T> void post(KVParam param, ApiResultListener listener) {
-        NetInner.ins.post(param,listener);
-    }
-
-    public static <T> PostRequest post() {
+    public static  PostRequest post() {
        return new PostRequest();
     }
 
-    public static <T> GetRequest get() {
+    public static  GetRequest get() {
         return new GetRequest();
     }
 
-    public static void get(KVParam param) {
-        NetInner.ins.get(param);
-    }
+   public static UploadRequest upload(){
+        return new UploadRequest();
+   }
 
     public static class Builder {
         String rootUrl;
