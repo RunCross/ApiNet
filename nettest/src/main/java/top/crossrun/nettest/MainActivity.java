@@ -1,21 +1,29 @@
 package top.crossrun.nettest;
 
+import android.icu.lang.UProperty;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
+import java.util.Map;
+
 import top.crossrun.net.api.ApiNet;
-import top.crossrun.net.api.KVParam;
+import top.crossrun.net.api.CompositeRecycle;
+import top.crossrun.net.api.GetRequest;
+import top.crossrun.net.api.Request;
+import top.crossrun.net.api.param.KVParam;
 import top.crossrun.net.listener.ApiResultListener;
 
 public class MainActivity extends AppCompatActivity {
+
+    CompositeRecycle compositeRecycle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        compositeRecycle = new CompositeRecycle();
 //        ApiNet.init(new ApiNet.Builder());
 //        ApiNet.get(new KVParam()
 //                .setUrl("http://igotone.zj.chinamobile.com:88/ZJMOAPortalNew/portal/index.do?data=ECDB7D5A6EFBFC7A7804D8A30BE803062409D17B746798EAB848A9A482DFD620")
@@ -48,11 +56,25 @@ public class MainActivity extends AppCompatActivity {
 //                }
 //        );
 
+        ApiNet.get().setCls(UpdateResult.class).setApiResultListener(null).setApiResultListener(new ApiResultListener<UpdateResult>(){
+
+            @Override
+            public void onRequestResultSucc(UpdateResult result) {
+
+            }
+
+            @Override
+            public void onRequestResultFailed(Throwable errMsg) {
+
+            }
+        });
+
         ApiNet
                 .post()
+                .registerRecycle(compositeRecycle)
                 .setParam(new KVParam()
                         .setUrl("http://igotone.zj.chinamobile.com:88/ZJMOAPortalNew/portal/index.do")
-                        .setParam("data", "ECDB7D5A6EFBFC7A7804D8A30BE803062409D17B746798EAB848A9A482DFD620"))
+                        .addParam("data", "ECDB7D5A6EFBFC7A7804D8A30BE803062409D17B746798EAB848A9A482DFD620"))
                 .setCls(UpdateResult.class)
                 .setApiResultListener(new ApiResultListener<UpdateResult>() {
                     @Override
@@ -66,5 +88,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .http();
+        ApiNet.upload().http();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (compositeRecycle!=null){
+            compositeRecycle.recycle();
+        }
+        super.onDestroy();
     }
 }

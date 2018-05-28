@@ -12,12 +12,15 @@ import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Call;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
+import top.crossrun.net.api.param.KVParam;
 import top.crossrun.net.listener.ApiResultListener;
 import top.crossrun.net.services.StringServices;
 
@@ -57,91 +60,96 @@ class ApiManager {
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).build();
+
     }
 
     public Retrofit getInstance(){
         return instance;
     }
 
-    public void get(KVParam param) {
-        Scheduler request;
-        Scheduler response;
-        if (param.apiSchedulerListener != null) {
-            request = param.apiSchedulerListener.requestScheduler();
-            response = param.apiSchedulerListener.responseScheduler();
-        } else {
-            request = Schedulers.io();
-            response = AndroidSchedulers.mainThread();
-        }
-        instance
-                .create(StringServices.class)
-                .get(param.url, param.getValues())
-                .subscribeOn(request)
-                .observeOn(response)
-                .subscribe(new Observer<String>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(String value) {
-                        Log.e("crossrun", value);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e("crossrun", e.getMessage());
-                        System.out.println(e.getMessage());
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+    public Call newCall(Request request){
+        return instance.callFactory().newCall(request);
     }
 
-    public <T> void post(KVParam param, final ApiResultListener listener) {
-        Scheduler request;
-        Scheduler response;
-        if (param.apiSchedulerListener != null) {
-            request = param.apiSchedulerListener.requestScheduler();
-            response = param.apiSchedulerListener.responseScheduler();
-        } else {
-            request = Schedulers.io();
-            response = Schedulers.io();
-        }
-        instance
-                .create(StringServices.class)
-                .post(param.url, param.getValues())
-                .subscribeOn(request)
-                .observeOn(response)
-                .subscribe(new Observer<String>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(String value) {
-                        if (listener==null){
-                            return;
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (listener==null){
-                            return;
-                        }
-                        listener.onRequestResultFailed(e);
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
+//    public void get(KVParam param) {
+//        Scheduler request;
+//        Scheduler response;
+//        if (param.apiSchedulerListener != null) {
+//            request = param.apiSchedulerListener.requestScheduler();
+//            response = param.apiSchedulerListener.responseScheduler();
+//        } else {
+//            request = Schedulers.io();
+//            response = AndroidSchedulers.mainThread();
+//        }
+//        instance
+//                .create(StringServices.class)
+//                .get(param.getUrl(), param.getValues())
+//                .subscribeOn(request)
+//                .observeOn(response)
+//                .subscribe(new Observer<String>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(String value) {
+//                        Log.e("crossrun", value);
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        Log.e("crossrun", e.getMessage());
+//                        System.out.println(e.getMessage());
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//
+//                    }
+//                });
+//    }
+//
+//    public <T> void post(KVParam param, final ApiResultListener listener) {
+//        Scheduler request;
+//        Scheduler response;
+//        if (param.apiSchedulerListener != null) {
+//            request = param.apiSchedulerListener.requestScheduler();
+//            response = param.apiSchedulerListener.responseScheduler();
+//        } else {
+//            request = Schedulers.io();
+//            response = Schedulers.io();
+//        }
+//        instance
+//                .create(StringServices.class)
+//                .post(param.url, param.getValues())
+//                .subscribeOn(request)
+//                .observeOn(response)
+//                .subscribe(new Observer<String>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(String value) {
+//                        if (listener==null){
+//                            return;
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        if (listener==null){
+//                            return;
+//                        }
+//                        listener.onRequestResultFailed(e);
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//
+//                    }
+//                });
+//    }
 }

@@ -2,6 +2,8 @@ package top.crossrun.net.api;
 
 import org.junit.Test;
 
+import top.crossrun.net.api.param.KVParam;
+
 import static org.junit.Assert.*;
 
 /**

@@ -7,9 +7,10 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
 
+import okhttp3.Call;
 import okhttp3.Interceptor;
+import okhttp3.Request;
 import retrofit2.Retrofit;
-import top.crossrun.net.listener.ApiResultListener;
 
 public class ApiNet {
 
@@ -26,8 +27,8 @@ public class ApiNet {
        return new PostRequest();
     }
 
-    public static  GetRequest get() {
-        return new GetRequest();
+    public static  <Object>GetRequest get() {
+        return new GetRequest<Object>();
     }
 
    public static UploadRequest upload(){
@@ -120,6 +121,10 @@ public class ApiNet {
 
     protected static Retrofit getInstance(){
         return NetInner.ins.getInstance();
+    }
+
+    protected static Call newCall(Request request){
+        return NetInner.ins.newCall(request);
     }
 
     private static class NetInner {

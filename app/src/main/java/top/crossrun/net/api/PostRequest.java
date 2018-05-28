@@ -5,6 +5,8 @@ import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import top.crossrun.net.api.param.BaseParam;
+import top.crossrun.net.api.param.KVParam;
 import top.crossrun.net.listener.ApiResultListener;
 import top.crossrun.net.services.StringServices;
 
@@ -18,7 +20,7 @@ public class PostRequest extends Request {
 
     ApiResultListener listener;
 
-    KVParam param;
+    BaseParam param;
 
     public PostRequest() {
         requestScheduler = Schedulers.io();
@@ -40,7 +42,18 @@ public class PostRequest extends Request {
         return this;
     }
 
-    public PostRequest setParam(KVParam param) {
+//    public PostRequest setParam(KVParam param) {
+//        this.param = param;
+//        return this;
+//    }
+
+//    public <T extends BaseParam> Request setParam(T param) {
+//        this.param = (KVParam) param;
+//        return this;
+//    }
+
+    @Override
+    public Request setParam(BaseParam param) {
         this.param = param;
         return this;
     }
@@ -57,7 +70,7 @@ public class PostRequest extends Request {
 
     public void http() {
         ApiNet.getInstance().create(StringServices.class)
-                .post(param.url, param.getValues())
+                .post(param.getUrl(), param.getMapValues())
                 .subscribeOn(requestScheduler)
                 .observeOn(responseScheduler)
                 .subscribe(new Observer<String>() {
@@ -71,13 +84,13 @@ public class PostRequest extends Request {
                         if (listener == null) {
                             return;
                         }
-                        if (cls!=null){
-                            if (cls == String.class){
+                        if (cls != null) {
+                            if (cls == String.class) {
                                 listener.onRequestResultSucc(value);
-                            }else {
+                            } else {
                                 try {
-                                    listener.onRequestResultSucc(ObjectParseUtils.pasrse(value,cls));
-                                }catch (Exception e){
+                                    listener.onRequestResultSucc(ObjectParseUtils.pasrse(value, cls));
+                                } catch (Exception e) {
                                     listener.onRequestResultFailed(e);
                                 }
                             }

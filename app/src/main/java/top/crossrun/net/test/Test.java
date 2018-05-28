@@ -3,7 +3,6 @@ package top.crossrun.net.test;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import top.crossrun.net.api.ApiNet;
-import top.crossrun.net.api.KVParam;
 
 public class Test {
     public void test(){
