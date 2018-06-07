@@ -6,7 +6,6 @@ import android.util.Log;
 
 import top.crossrun.net.api.ApiNet;
 import top.crossrun.net.api.CompositeRecycle;
-import top.crossrun.net.api.param.KVStringParam;
 import top.crossrun.net.api.param.KVUrlParam;
 import top.crossrun.net.listener.ApiResultListener;
 
@@ -71,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 //                }).http();
 
         ApiNet.get(String.class)
+                .registerRecycle(compositeRecycle)
                 .setParam(new KVUrlParam()
                         .setUrl("http://igotone.zj.chinamobile.com:88/ZJMOAPortalNew/portal/index.do")
                         .addParam("data", "ECDB7D5A6EFBFC7A7804D8A30BE803062409D17B746798EAB848A9A482DFD620")

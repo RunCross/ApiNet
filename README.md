@@ -1,6 +1,9 @@
 # ApiNet
 试图封装okhttp，弄一个简化版的Http请求
 
+## import
+[![](https://jitpack.io/v/RunCross/ApiNet.svg)](https://jitpack.io/#RunCross/ApiNet)https://jitpack.io/#RunCross/ApiNet
+
 ## get
 ```
 ApiNet.get(String.class)
