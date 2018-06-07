@@ -1,12 +1,12 @@
 # ApiNet
-试图封装retrofit2，弄一个简化版的Http请求
+试图封装okhttp，弄一个简化版的Http请求
 
 ## get
 ```
 ApiNet.get(String.class)
                 .setParam(new KVUrlParam()
-                        .setUrl("http://igotone.zj.chinamobile.com:88/ZJMOAPortalNew/portal/index.do")
-                        .addParam("data", "ECDB7D5A6EFBFC7A7804D8A30BE803062409D17B746798EAB848A9A482DFD620")
+                        .setUrl("http://xxx.xxx")
+                        .addParam("key", "value")
                 )
                 .setApiResultListener(new ApiResultListener<String>() {
                     @Override
