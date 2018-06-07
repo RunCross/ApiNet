@@ -1,17 +1,11 @@
 package top.crossrun.net.api;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observer;
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -20,9 +14,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
-import top.crossrun.net.api.param.KVParam;
-import top.crossrun.net.listener.ApiResultListener;
-import top.crossrun.net.services.StringServices;
 
 class ApiManager {
     private static Retrofit instance;
@@ -71,7 +62,7 @@ class ApiManager {
         return instance.callFactory().newCall(request);
     }
 
-//    public void get(KVParam param) {
+//    public void get(KVUrlParam param) {
 //        Scheduler request;
 //        Scheduler response;
 //        if (param.apiSchedulerListener != null) {
@@ -110,7 +101,7 @@ class ApiManager {
 //                });
 //    }
 //
-//    public <T> void post(KVParam param, final ApiResultListener listener) {
+//    public <T> void post(KVUrlParam param, final ApiResultListener listener) {
 //        Scheduler request;
 //        Scheduler response;
 //        if (param.apiSchedulerListener != null) {

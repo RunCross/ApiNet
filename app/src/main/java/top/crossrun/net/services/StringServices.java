@@ -16,7 +16,4 @@ public interface StringServices {
     @FormUrlEncoded
     @POST()
     Observable<String> post(@Url() String url, @FieldMap Map<String, Object> data);
-
-    @GET()
-    Observable<String> get(@Url() String url, @QueryMap Map<String, Object> data);
 }

@@ -1,5 +1,6 @@
 package top.crossrun.net.api;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,10 +10,9 @@ import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Call;
 import okhttp3.Interceptor;
-import okhttp3.Request;
 import retrofit2.Retrofit;
 
-public class ApiNet {
+public class ApiNet{
 
     /**
      *
@@ -23,16 +23,22 @@ public class ApiNet {
         NetInner.builder = builder;
     }
 
-    public static  PostRequest post() {
-       return new PostRequest();
+    public static  <T>PostRequest<T> post(Class<T> s) {
+       return new PostRequest<T>(s);
     }
 
-    public static  <Object>GetRequest get() {
-        return new GetRequest<Object>();
+//    public static <T>ApiNet<T> create(Class<T> s){
+//        ApiNet<T> a = new ApiNet<>();
+//        return a;
+//    }
+
+    @SuppressWarnings("unchecked")
+    public static <T>Request<T> get(Class<T> s) {
+        return new GetRequest<T>(s);
     }
 
-   public static UploadRequest upload(){
-        return new UploadRequest();
+   public static <T>UploadRequest upload(Class<T> s){
+        return new UploadRequest(s);
    }
 
     public static class Builder {
@@ -123,7 +129,7 @@ public class ApiNet {
         return NetInner.ins.getInstance();
     }
 
-    protected static Call newCall(Request request){
+    protected static Call newCall(okhttp3.Request request){
         return NetInner.ins.newCall(request);
     }
 

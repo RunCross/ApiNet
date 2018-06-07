@@ -7,15 +7,20 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
 import okhttp3.Response;
 
 public class GetRequest<T> extends Request<T> {
 
 
+    public GetRequest(Class<T> cls) {
+        super(cls);
+    }
+
     @Override
-    public void http() {
-        Observable
-                .create(new ObservableOnSubscribe<T>() {
+    protected Observable<String> getRequestObservable() {
+       return Observable
+                .create(new ObservableOnSubscribe<String>() {
 
                     /**
                      * Called for each Observer that subscribes.
@@ -24,48 +29,22 @@ public class GetRequest<T> extends Request<T> {
                      * @throws Exception on error
                      */
                     @Override
-                    public void subscribe(ObservableEmitter<T> e) throws Exception {
+                    public void subscribe(ObservableEmitter<String> e) throws Exception {
                         okhttp3.Request request = new okhttp3.Request.Builder()
                                 .url(param.getUrl())//地址
-                                .post(param.getRequestBodey())//添加请求体
+                                .get()//添加请求体
                                 .build();
                         try {
-                            Response response =ApiNet.newCall(request).execute();
+                            Response response = ApiNet.newCall(request).execute();
                             String resp = response.body().string();
-                            if (cls==String.class){
-                                e.onNext((T)resp);
-                            }else {
-                                e.onNext((T) gson.fromJson(resp,cls));
-                            }
+                            e.onNext(resp);
                         } catch (IOException e1) {
                             e1.printStackTrace();
                             e.onError(e1);
                         }
+                        e.onComplete();
                     }
-                })
-                .subscribeOn(requestScheduler)
-                .observeOn(responseScheduler)
-        .subscribe(new Observer<T>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(T value) {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
+                });
     }
 
 //    public void http() {
@@ -111,11 +90,5 @@ public class GetRequest<T> extends Request<T> {
 //                    }
 //                });
 //    }
-
-    @Override
-    public void recycle() {
-        listener = null;
-        param.recycle();
-    }
 
 }

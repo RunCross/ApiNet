@@ -1,120 +1,95 @@
 package top.crossrun.net.api;
 
+import java.io.IOException;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import top.crossrun.net.api.param.BaseParam;
-import top.crossrun.net.api.param.KVParam;
-import top.crossrun.net.listener.ApiResultListener;
+import okhttp3.Response;
 import top.crossrun.net.services.StringServices;
 
-public class PostRequest extends Request {
+public class PostRequest<T> extends Request<T> {
 
-    Class cls;
 
-    Scheduler requestScheduler;
-
-    Scheduler responseScheduler;
-
-    ApiResultListener listener;
-
-    BaseParam param;
-
-    public PostRequest() {
-        requestScheduler = Schedulers.io();
-        responseScheduler = AndroidSchedulers.mainThread();
+    public PostRequest(Class<T> cls) {
+        super(cls);
     }
 
-    public PostRequest setRequestScheduler(Scheduler requestScheduler) {
-        this.requestScheduler = requestScheduler;
-        return this;
-    }
 
-    public PostRequest setResponseScheduler(Scheduler reponseScheduler) {
-        this.responseScheduler = reponseScheduler;
-        return this;
-    }
-
-    public PostRequest setApiResultListener(ApiResultListener listener) {
-        this.listener = listener;
-        return this;
-    }
-
-//    public PostRequest setParam(KVParam param) {
-//        this.param = param;
-//        return this;
-//    }
-
-//    public <T extends BaseParam> Request setParam(T param) {
-//        this.param = (KVParam) param;
-//        return this;
+//    public void http() {
+//        ApiNet.getInstance().create(StringServices.class)
+//                .post(param.getUrl(), param.getMapValues())
+//                .subscribeOn(requestScheduler)
+//                .observeOn(responseScheduler)
+//                .subscribe(new Observer<String>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(String value) {
+//                        if (listener == null) {
+//                            return;
+//                        }
+//                        if (cls != null) {
+//                            if (cls == String.class) {
+//                                listener.onRequestResultSucc(value);
+//                            } else {
+//                                try {
+//                                    listener.onRequestResultSucc(ObjectParseUtils.pasrse(value, cls));
+//                                } catch (Exception e) {
+//                                    listener.onRequestResultFailed(e);
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        if (listener == null) {
+//                            return;
+//                        }
+//                        listener.onRequestResultFailed(e);
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//
+//                    }
+//                });
 //    }
 
     @Override
-    public Request setParam(BaseParam param) {
-        this.param = param;
-        return this;
-    }
+    protected Observable<String> getRequestObservable() {
+        return Observable
+                .create(new ObservableOnSubscribe<String>() {
 
-    /**
-     * 返回结果的实体类
-     *
-     * @param cls
-     */
-    public PostRequest setCls(Class cls) {
-        this.cls = cls;
-        return this;
-    }
-
-    public void http() {
-        ApiNet.getInstance().create(StringServices.class)
-                .post(param.getUrl(), param.getMapValues())
-                .subscribeOn(requestScheduler)
-                .observeOn(responseScheduler)
-                .subscribe(new Observer<String>() {
+                    /**
+                     * Called for each Observer that subscribes.
+                     *
+                     * @param e the safe emitter instance, never null
+                     * @throws Exception on error
+                     */
                     @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(String value) {
-                        if (listener == null) {
-                            return;
+                    public void subscribe(ObservableEmitter<String> e) throws Exception {
+                        okhttp3.Request request = new okhttp3.Request.Builder()
+                                .url(param.getUrl())//地址
+                                .post(param.getRequestBodey())//添加请求体
+                                .build();
+                        try {
+                            Response response = ApiNet.newCall(request).execute();
+                            String resp = response.body().string();
+                            e.onNext(resp);
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                            e.onError(e1);
                         }
-                        if (cls != null) {
-                            if (cls == String.class) {
-                                listener.onRequestResultSucc(value);
-                            } else {
-                                try {
-                                    listener.onRequestResultSucc(ObjectParseUtils.pasrse(value, cls));
-                                } catch (Exception e) {
-                                    listener.onRequestResultFailed(e);
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (listener == null) {
-                            return;
-                        }
-                        listener.onRequestResultFailed(e);
-                    }
-
-                    @Override
-                    public void onComplete() {
-
+                        e.onComplete();
                     }
                 });
     }
 
-    @Override
-    public void recycle() {
-        listener = null;
-        param.recycle();
-    }
 }

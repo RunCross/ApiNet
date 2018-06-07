@@ -1,5 +1,6 @@
 package top.crossrun.net.api;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -24,7 +25,8 @@ public class UploadRequest extends Request {
 
     FileParam param;
 
-    public UploadRequest() {
+    public UploadRequest(Class s) {
+        super(s);
         requestScheduler = Schedulers.io();
         responseScheduler = AndroidSchedulers.mainThread();
     }
@@ -102,6 +104,11 @@ public class UploadRequest extends Request {
 
                     }
                 });
+    }
+
+    @Override
+    protected Observable<String> getRequestObservable() {
+        return null;
     }
 
     @Override

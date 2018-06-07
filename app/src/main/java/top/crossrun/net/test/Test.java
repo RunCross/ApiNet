@@ -7,7 +7,6 @@ import top.crossrun.net.api.ApiNet;
 public class Test {
     public void test(){
         ApiNet.init(new ApiNet.Builder());
-        ApiNet.http();
 //        ApiNet.post(new KVParam());
 //        text/plain
 //        http://igotone.zj.chinamobile.com:88/ZJMOAPortalNew/portal/index.do

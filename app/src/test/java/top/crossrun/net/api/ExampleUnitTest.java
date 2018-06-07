@@ -2,7 +2,7 @@ package top.crossrun.net.api;
 
 import org.junit.Test;
 
-import top.crossrun.net.api.param.KVParam;
+import top.crossrun.net.api.param.KVUrlParam;
 
 import static org.junit.Assert.*;
 
@@ -20,7 +20,7 @@ public class ExampleUnitTest {
     @Test
     public void post_simple() {
         ApiNet.init(new ApiNet.Builder());
-        ApiNet.post(new KVParam());
+        ApiNet.post(new KVUrlParam());
         assertEquals(4, 2 + 2);
     }
 }
