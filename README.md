@@ -1,7 +1,7 @@
 # ApiNet
 试图封装retrofit2，弄一个简化版的Http请求
 
-#get
+## get
 ```
 ApiNet.get(String.class)
                 .setParam(new KVUrlParam()
@@ -21,7 +21,7 @@ ApiNet.get(String.class)
                 }).http();
 ```
 
-#post
+## post
 ```
 ApiNet.post(String.class)
                 .setParam(new KVStringParam()
