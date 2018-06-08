@@ -2,6 +2,10 @@ package top.crossrun.net.api;
 
 import com.google.gson.Gson;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.Scheduler;
@@ -29,12 +33,15 @@ public abstract class Request<T> implements RecycleAble {
 
     Gson gson;
 
+    Map<String,String> header;
+
     public Request(Class<T> cls) {
         gson = new Gson();
         requestScheduler = Schedulers.io();
         parseScheduler = Schedulers.io();
         responseScheduler = AndroidSchedulers.mainThread();
         this.cls = cls;
+        header = new HashMap<>();
     }
 
     public Request<T> registerRecycle(CompositeRecycle cr) {
@@ -76,6 +83,11 @@ public abstract class Request<T> implements RecycleAble {
 
     public Request<T> setApiResultListener(ApiResultListener<T> listener) {
         this.listener = listener;
+        return this;
+    }
+
+    public Request<T>  addHeader(String key,String value) {
+        header.put(key,value);
         return this;
     }
 
@@ -143,6 +155,18 @@ public abstract class Request<T> implements RecycleAble {
 
     public interface IListener<T> {
         void list(T obj);
+    }
+
+    protected okhttp3.Request.Builder getRequestBuilder(){
+        okhttp3.Request.Builder b = new okhttp3.Request.Builder();
+        if (header!=null&&header.size()>0){
+            Set<String> keys = header.keySet();
+            for (String key :
+                    keys) {
+                b.addHeader(key, header.get(key));
+            }
+        }
+        return b;
     }
 
     protected abstract Observable<String> getRequestObservable();

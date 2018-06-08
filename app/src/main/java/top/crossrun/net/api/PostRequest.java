@@ -75,7 +75,7 @@ public class PostRequest<T> extends Request<T> {
                      */
                     @Override
                     public void subscribe(ObservableEmitter<String> e) throws Exception {
-                        okhttp3.Request request = new okhttp3.Request.Builder()
+                        okhttp3.Request request = getRequestBuilder()
                                 .url(param.getUrl())//地址
                                 .post(param.getRequestBodey())//添加请求体
                                 .build();

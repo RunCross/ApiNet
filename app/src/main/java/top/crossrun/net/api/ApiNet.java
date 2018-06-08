@@ -1,6 +1,5 @@
 package top.crossrun.net.api;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +36,8 @@ public class ApiNet{
         return new GetRequest<T>(s);
     }
 
-   public static <T>UploadRequest upload(Class<T> s){
-        return new UploadRequest(s);
+   public static <T>UploadRequest<T> upload(Class<T> s){
+        return new UploadRequest<T>(s);
    }
 
     public static class Builder {

@@ -33,9 +33,7 @@ public abstract class BaseParam implements RecycleAble {
         return values;
     }
 
-    public RequestBody getRequestBodey(){
-        return null;
-    }
+    public abstract RequestBody getRequestBodey();
 
     @Override
     public void recycle() {

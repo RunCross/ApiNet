@@ -7,8 +7,9 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
 public class FileWithKVParam extends FileParam {
-    public RequestBody getValues() {
-//        JSONObject obj = new JSONObject();
+
+    @Override
+    public RequestBody getRequestBodey() {
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
         if (files != null && files.size() > 0) {
             Set<String> keySet = files.keySet();
@@ -22,11 +23,6 @@ public class FileWithKVParam extends FileParam {
             for (String str :
                     keySet) {
                 builder.addFormDataPart(str, values.get(str).toString());
-//                try {
-//                    obj.put(str,keys.get(str));
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
             }
         }
 
@@ -42,4 +38,5 @@ public class FileWithKVParam extends FileParam {
 
         return builder.build();
     }
+
 }

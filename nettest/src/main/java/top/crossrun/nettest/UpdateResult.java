@@ -19,4 +19,5 @@ public class UpdateResult {
     public String imgStartDate;
     public String imgId;
     public String updateVersion;
+    public String result;
 }
