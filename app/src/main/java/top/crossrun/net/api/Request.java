@@ -1,10 +1,14 @@
 package top.crossrun.net.api;
 
+import android.util.LruCache;
+
 import com.google.gson.Gson;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -33,7 +37,9 @@ public abstract class Request<T> implements RecycleAble {
 
     Gson gson;
 
-    Map<String,String> header;
+    Map<String, String> header;
+
+    Disposable dCache;
 
     public Request(Class<T> cls) {
         gson = new Gson();
@@ -86,8 +92,8 @@ public abstract class Request<T> implements RecycleAble {
         return this;
     }
 
-    public Request<T>  addHeader(String key,String value) {
-        header.put(key,value);
+    public Request<T> addHeader(String key, String value) {
+        header.put(key, value);
         return this;
     }
 
@@ -101,7 +107,7 @@ public abstract class Request<T> implements RecycleAble {
         return this;
     }
 
-    public void http(){
+    public void http() {
         getRequestObservable()
                 .subscribeOn(requestScheduler)
                 .observeOn(parseScheduler)
@@ -123,7 +129,8 @@ public abstract class Request<T> implements RecycleAble {
                 .subscribe(new Observer<T>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        closeDCache();
+                        dCache = d;
                     }
 
                     @Override
@@ -131,6 +138,7 @@ public abstract class Request<T> implements RecycleAble {
                         if (listener != null) {
                             listener.onRequestResultSucc(value);
                         }
+                        closeDCache();
                     }
 
                     @Override
@@ -138,6 +146,7 @@ public abstract class Request<T> implements RecycleAble {
                         if (listener != null) {
                             listener.onRequestResultFailed(e);
                         }
+                        closeDCache();
                     }
 
                     @Override
@@ -157,9 +166,9 @@ public abstract class Request<T> implements RecycleAble {
         void list(T obj);
     }
 
-    protected okhttp3.Request.Builder getRequestBuilder(){
+    protected okhttp3.Request.Builder getRequestBuilder() {
         okhttp3.Request.Builder b = new okhttp3.Request.Builder();
-        if (header!=null&&header.size()>0){
+        if (header != null && header.size() > 0) {
             Set<String> keys = header.keySet();
             for (String key :
                     keys) {
@@ -171,10 +180,22 @@ public abstract class Request<T> implements RecycleAble {
 
     protected abstract Observable<String> getRequestObservable();
 
+    private void closeDCache(){
+        if (dCache != null && !dCache.isDisposed()) {
+            dCache.dispose();
+        }
+        dCache = null;
+    }
+
+    public void cancel(){
+        closeDCache();
+    }
+
     @Override
     public void recycle() {
+        closeDCache();
         listener = null;
         param.recycle();
-        param=null;
+        param = null;
     }
 }
