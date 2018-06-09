@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 //                .http();
 //        ApiNet.upload().http();
 
-        ApiNet.post(UpdateResult.class)
+        ApiNet.get(UpdateResult.class)
                 .setParam(new FileWithJSONParam()
 //                        .addFile("flashss0.jpg", "file", new File("/sdcard/Pictures/Screenshots/Screenshot_2018-04-13-16-46-48.png"))
 //                        .addFile("flashss.jpg", "file", new File("/sdcard/moa/flash.jpg"))

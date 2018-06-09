@@ -63,7 +63,7 @@ public class PostRequest<T> extends Request<T> {
 //    }
 
     @Override
-    protected Observable<String> getRequestObservable() {
+    public Observable<String> getRequestObservable() {
         return Observable
                 .create(new ObservableOnSubscribe<String>() {
 
@@ -80,10 +80,10 @@ public class PostRequest<T> extends Request<T> {
                                 .post(param.getRequestBodey())//添加请求体
                                 .build();
                         try {
-                            Response response = ApiNet.newCall(request).execute();
+                            Response response = createCall(request).execute();
                             String resp = response.body().string();
                             e.onNext(resp);
-                        } catch (IOException e1) {
+                        } catch (Exception e1) {
                             e1.printStackTrace();
                             e.onError(e1);
                         }

@@ -1,22 +1,27 @@
 package top.crossrun.net.api;
 
-import android.util.LruCache;
+import android.util.Log;
 
 import com.google.gson.Gson;
 
-import java.lang.ref.WeakReference;
+import org.reactivestreams.Subscription;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
+import io.reactivex.internal.subscriptions.SubscriptionArbiter;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Call;
+import okhttp3.Response;
 import top.crossrun.net.api.param.BaseParam;
 import top.crossrun.net.interf.RecycleAble;
 import top.crossrun.net.listener.ApiResultListener;
@@ -40,6 +45,8 @@ public abstract class Request<T> implements RecycleAble {
     Map<String, String> header;
 
     Disposable dCache;
+
+    Call call;
 
     public Request(Class<T> cls) {
         gson = new Gson();
@@ -155,18 +162,7 @@ public abstract class Request<T> implements RecycleAble {
                 });
     }
 
-    IListener iListener;
-
-    public Request<T> setiListener(IListener iListener) {
-        this.iListener = iListener;
-        return this;
-    }
-
-    public interface IListener<T> {
-        void list(T obj);
-    }
-
-    protected okhttp3.Request.Builder getRequestBuilder() {
+    public okhttp3.Request.Builder getRequestBuilder() {
         okhttp3.Request.Builder b = new okhttp3.Request.Builder();
         if (header != null && header.size() > 0) {
             Set<String> keys = header.keySet();
@@ -178,17 +174,20 @@ public abstract class Request<T> implements RecycleAble {
         return b;
     }
 
-    protected abstract Observable<String> getRequestObservable();
+    public abstract Observable<String> getRequestObservable();
 
-    private void closeDCache(){
-        if (dCache != null && !dCache.isDisposed()) {
-            dCache.dispose();
+    private void closeDCache() {
+        if (call!=null && !call.isCanceled()){
+            call.isCanceled();
         }
+        call = null;
+        Log.e("closeCache","closeCache");
         dCache = null;
     }
 
-    public void cancel(){
-        closeDCache();
+    public Call createCall(okhttp3.Request request) {
+        call = ApiNet.newCall(request);
+        return call;
     }
 
     @Override

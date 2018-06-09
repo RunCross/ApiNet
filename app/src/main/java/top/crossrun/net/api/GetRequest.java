@@ -7,6 +7,7 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Cancellable;
 import io.reactivex.functions.Function;
 import okhttp3.Response;
 
@@ -18,7 +19,7 @@ public class GetRequest<T> extends Request<T> {
     }
 
     @Override
-    protected Observable<String> getRequestObservable() {
+    public Observable<String> getRequestObservable() {
        return Observable
                 .create(new ObservableOnSubscribe<String>() {
 
@@ -35,10 +36,10 @@ public class GetRequest<T> extends Request<T> {
                                 .get()//添加请求体
                                 .build();
                         try {
-                            Response response = ApiNet.newCall(request).execute();
+                            Response response = createCall(request).execute();
                             String resp = response.body().string();
                             e.onNext(resp);
-                        } catch (IOException e1) {
+                        } catch (Throwable e1) {
                             e1.printStackTrace();
                             e.onError(e1);
                         }
