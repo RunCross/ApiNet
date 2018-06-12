@@ -22,6 +22,6 @@ public class KVStringParam extends BaseParam {
             sb.append(values.get(key));
             sb.append("&");
         }
-        return RequestBody.create(MediaType.parse("text/plain"), sb.toString());
+        return RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), sb.toString());
     }
 }

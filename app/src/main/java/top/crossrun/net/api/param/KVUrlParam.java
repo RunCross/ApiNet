@@ -37,7 +37,7 @@ public class KVUrlParam extends BaseParam {
 
     @Override
     public RequestBody getRequestBodey() {
-        return RequestBody.create(MediaType.parse("text/plain"), "");
+        return RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), "");
     }
 
     @Override

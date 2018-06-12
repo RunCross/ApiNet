@@ -2,6 +2,7 @@ package top.crossrun.nettest;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
 
 import java.io.File;
@@ -10,6 +11,8 @@ import top.crossrun.net.api.ApiNet;
 import top.crossrun.net.api.CompositeRecycle;
 import top.crossrun.net.api.param.FileWithJSONParam;
 import top.crossrun.net.api.param.FileWithKVParam;
+import top.crossrun.net.api.param.KVStringParam;
+import top.crossrun.net.api.param.KVUrlParam;
 import top.crossrun.net.listener.ApiResultListener;
 
 public class MainActivity extends AppCompatActivity {
@@ -115,25 +118,43 @@ public class MainActivity extends AppCompatActivity {
 //                .http();
 //        ApiNet.upload().http();
 
-        ApiNet.get(UpdateResult.class)
-                .setParam(new FileWithJSONParam()
-//                        .addFile("flashss0.jpg", "file", new File("/sdcard/Pictures/Screenshots/Screenshot_2018-04-13-16-46-48.png"))
-//                        .addFile("flashss.jpg", "file", new File("/sdcard/moa/flash.jpg"))
-                        .addParam("test","d")
-                        .addParam("sss","xxxc")
-                        .setUrl("http://10.70.148.34:9292/upfile"))
-                .registerRecycle(compositeRecycle)
-                .setApiResultListener(new ApiResultListener<UpdateResult>() {
+        ApiNet.post(NotifyResult.class)
+                .setParam(new KVStringParam()
+                        .setUrl("http://10.70.148.34:9393/notify")
+                        .addParam("type", "来电")
+                        .addParam("msg", "sdf-sdfsdafasd"))
+                .setApiResultListener(new ApiResultListener<NotifyResult>() {
                     @Override
-                    public void onRequestResultSucc(UpdateResult result) {
-                        text.setText(result.result);
+                    public void onRequestResultSucc(NotifyResult result) {
+                        Log.e("top.crossrun", result.message);
                     }
 
                     @Override
                     public void onRequestResultFailed(Throwable errMsg) {
-                        text.setText(errMsg.getMessage());
+
                     }
-                }).http();
+                })
+                .http();
+
+//        ApiNet.get(UpdateResult.class)
+//                .setParam(new FileWithJSONParam()
+////                        .addFile("flashss0.jpg", "file", new File("/sdcard/Pictures/Screenshots/Screenshot_2018-04-13-16-46-48.png"))
+////                        .addFile("flashss.jpg", "file", new File("/sdcard/moa/flash.jpg"))
+//                        .addParam("test","d")
+//                        .addParam("sss","xxxc")
+//                        .setUrl("http://10.70.148.34:9292/upfile"))
+//                .registerRecycle(compositeRecycle)
+//                .setApiResultListener(new ApiResultListener<UpdateResult>() {
+//                    @Override
+//                    public void onRequestResultSucc(UpdateResult result) {
+//                        text.setText(result.result);
+//                    }
+//
+//                    @Override
+//                    public void onRequestResultFailed(Throwable errMsg) {
+//                        text.setText(errMsg.getMessage());
+//                    }
+//                }).http();
 
     }
 
