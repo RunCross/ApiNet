@@ -79,14 +79,10 @@ public class PostRequest<T> extends Request<T> {
                                 .url(param.getUrl())//地址
                                 .post(param.getRequestBodey())//添加请求体
                                 .build();
-                        try {
-                            Response response = createCall(request).execute();
-                            String resp = response.body().string();
-                            e.onNext(resp);
-                        } catch (Exception e1) {
-                            e1.printStackTrace();
-                            e.onError(e1);
-                        }
+
+                        Response response = createCall(request).execute();
+                        String resp = response.body().string();
+                        e.onNext(resp);
                         e.onComplete();
                     }
                 });

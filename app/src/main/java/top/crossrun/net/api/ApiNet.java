@@ -19,7 +19,7 @@ public class ApiNet{
      */
     public static void init(Builder builder) {
         if (builder == null) return;
-        NetInner.builder = builder;
+        NetInner.ins = new ApiManager(builder);
     }
 
     public static  <T>PostRequest<T> post(Class<T> s) {
@@ -133,15 +133,6 @@ public class ApiNet{
     }
 
     private static class NetInner {
-        private static ApiManager ins;
-
-        private static Builder builder;
-
-        static {
-            if (null == builder) {
-                builder = new Builder();
-            }
-            ins = new ApiManager(builder);
-        }
+        private static ApiManager ins = new ApiManager(new Builder());
     }
 }

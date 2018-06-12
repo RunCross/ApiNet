@@ -134,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 })
+                .registerRecycle(compositeRecycle)
                 .http();
 
 //        ApiNet.get(UpdateResult.class)

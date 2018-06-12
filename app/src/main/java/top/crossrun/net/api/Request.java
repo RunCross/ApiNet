@@ -44,8 +44,6 @@ public abstract class Request<T> implements RecycleAble {
 
     Map<String, String> header;
 
-    Disposable dCache;
-
     Call call;
 
     public Request(Class<T> cls) {
@@ -136,8 +134,6 @@ public abstract class Request<T> implements RecycleAble {
                 .subscribe(new Observer<T>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        closeDCache();
-                        dCache = d;
                     }
 
                     @Override
@@ -145,7 +141,6 @@ public abstract class Request<T> implements RecycleAble {
                         if (listener != null) {
                             listener.onRequestResultSucc(value);
                         }
-                        closeDCache();
                     }
 
                     @Override
@@ -153,7 +148,6 @@ public abstract class Request<T> implements RecycleAble {
                         if (listener != null) {
                             listener.onRequestResultFailed(e);
                         }
-                        closeDCache();
                     }
 
                     @Override
@@ -176,13 +170,11 @@ public abstract class Request<T> implements RecycleAble {
 
     public abstract Observable<String> getRequestObservable();
 
-    private void closeDCache() {
+    private void closeHttpCall() {
         if (call!=null && !call.isCanceled()){
-            call.isCanceled();
+            call.cancel();
         }
         call = null;
-        Log.e("closeCache","closeCache");
-        dCache = null;
     }
 
     public Call createCall(okhttp3.Request request) {
@@ -192,7 +184,7 @@ public abstract class Request<T> implements RecycleAble {
 
     @Override
     public void recycle() {
-        closeDCache();
+        closeHttpCall();
         listener = null;
         param.recycle();
         param = null;
