@@ -1,5 +1,7 @@
 package top.crossrun.net.api;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 
 import java.util.HashMap;
@@ -151,7 +153,7 @@ public abstract class Request<T> implements RecycleAble {
     @Override
     public void recycle() {
         cancel();
-        closeHttpCall();
+//        closeHttpCall();
         listener = null;
         param.recycle();
         param = null;
@@ -185,7 +187,7 @@ public abstract class Request<T> implements RecycleAble {
                             if (l == null) {
                                 return null;
                             }
-                            if (cls.getClass().equals(String.class)){
+                            if ("java.lang.String".equals(cls.getName())){
                                 return (T) s;
                             }
                             T result = gson.fromJson(s, cls);
