@@ -1,14 +1,8 @@
 package top.crossrun.net.api;
 
-import java.io.IOException;
-
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Cancellable;
-import io.reactivex.functions.Function;
 import okhttp3.Response;
 
 public class GetRequest<T> extends Request<T> {
@@ -30,7 +24,7 @@ public class GetRequest<T> extends Request<T> {
                      * @throws Exception on error
                      */
                     @Override
-                    public void subscribe(ObservableEmitter<String> e) throws Exception {
+                    public void subscribe(ObservableEmitter<String> e) {
                         okhttp3.Request request = getRequestBuilder()
                                 .url(param.getUrl())//地址
                                 .get()//添加请求体

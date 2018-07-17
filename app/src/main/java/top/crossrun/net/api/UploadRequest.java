@@ -5,15 +5,7 @@ import java.io.IOException;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 import okhttp3.Response;
-import top.crossrun.net.api.param.FileParam;
-import top.crossrun.net.listener.ApiResultListener;
-import top.crossrun.net.services.UploadServices;
 
 /**
  * 上传
@@ -82,7 +74,7 @@ public class UploadRequest<T> extends Request<T> {
                      * @throws Exception on error
                      */
                     @Override
-                    public void subscribe(ObservableEmitter<String> e) throws Exception {
+                    public void subscribe(ObservableEmitter<String> e) {
                         okhttp3.Request request = getRequestBuilder()
                                 .url(param.getUrl())//地址
                                 .post(param.getRequestBodey())//添加请求体

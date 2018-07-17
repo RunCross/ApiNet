@@ -15,7 +15,7 @@ public class FileWithKVParam extends FileParam {
             Set<String> keySet = files.keySet();
             for (String str :
                     keySet) {
-                builder.addFormDataPart("file", str, RequestBody.create(MediaType.parse("application/octet-stream"), files.get(str)));
+                builder.addFormDataPart(filekeys.get(str), str, RequestBody.create(MediaType.parse("application/octet-stream"), files.get(str)));
             }
         }
         if (values != null && values.size() > 0) {

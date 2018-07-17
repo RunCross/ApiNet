@@ -1,12 +1,7 @@
 package top.crossrun.net.api;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 
-import org.reactivestreams.Subscription;
-
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -16,12 +11,9 @@ import io.reactivex.Observer;
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
-import io.reactivex.internal.subscriptions.SubscriptionArbiter;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
-import okhttp3.Response;
 import top.crossrun.net.api.param.BaseParam;
 import top.crossrun.net.interf.RecycleAble;
 import top.crossrun.net.listener.ApiResultListener;
@@ -45,6 +37,8 @@ public abstract class Request<T> implements RecycleAble {
     Map<String, String> header;
 
     Call call;
+
+    IR r;
 
     public Request(Class<T> cls) {
         gson = new Gson();
@@ -112,48 +106,20 @@ public abstract class Request<T> implements RecycleAble {
         return this;
     }
 
+    /**
+     * 只是取消listener，并不是真正取消请求
+     */
+    public void cancel() {
+        if (r != null) {
+            r.setListener(null);
+        }
+        r = null;
+    }
+
     public void http() {
-        getRequestObservable()
-                .subscribeOn(requestScheduler)
-                .observeOn(parseScheduler)
-                .map(new Function<String, T>() {
-                    /**
-                     * Apply some calculation to the input value and return some other value.
-                     *
-                     * @param s the input value
-                     * @return the output value
-                     * @throws Exception on error
-                     */
-                    @Override
-                    public T apply(String s) throws Exception {
-                        T result = gson.fromJson(s, cls);
-                        return result;
-                    }
-                })
-                .observeOn(responseScheduler)
-                .subscribe(new Observer<T>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
-
-                    @Override
-                    public void onNext(T value) {
-                        if (listener != null) {
-                            listener.onRequestResultSucc(value);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (listener != null) {
-                            listener.onRequestResultFailed(e);
-                        }
-                    }
-
-                    @Override
-                    public void onComplete() {
-                    }
-                });
+        cancel();
+        r = new IR(listener);
+        r.http();
     }
 
     public okhttp3.Request.Builder getRequestBuilder() {
@@ -171,7 +137,7 @@ public abstract class Request<T> implements RecycleAble {
     public abstract Observable<String> getRequestObservable();
 
     private void closeHttpCall() {
-        if (call!=null && !call.isCanceled()){
+        if (call != null && !call.isCanceled()) {
             call.cancel();
         }
         call = null;
@@ -184,9 +150,66 @@ public abstract class Request<T> implements RecycleAble {
 
     @Override
     public void recycle() {
+        cancel();
         closeHttpCall();
         listener = null;
         param.recycle();
         param = null;
+    }
+
+    class IR {
+        ApiResultListener<T> listener;
+
+        public IR(ApiResultListener<T> listener) {
+            this.listener = listener;
+        }
+
+        public void setListener(ApiResultListener<T> listener) {
+            this.listener = listener;
+        }
+
+        public void http() {
+            getRequestObservable()
+                    .subscribeOn(requestScheduler)
+                    .observeOn(parseScheduler)
+                    .map(new Function<String, T>() {
+                        /**
+                         * Apply some calculation to the input value and return some other value.
+                         *
+                         * @param s the input value
+                         * @return the output value
+                         * @throws Exception on error
+                         */
+                        @Override
+                        public T apply(String s) {
+                            T result = gson.fromJson(s, cls);
+                            return result;
+                        }
+                    })
+                    .observeOn(responseScheduler)
+                    .subscribe(new Observer<T>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                        }
+
+                        @Override
+                        public void onNext(T value) {
+                            if (listener != null) {
+                                listener.onRequestResultSucc(value);
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            if (listener != null) {
+                                listener.onRequestResultFailed(e);
+                            }
+                        }
+
+                        @Override
+                        public void onComplete() {
+                        }
+                    });
+        }
     }
 }
