@@ -158,14 +158,14 @@ public abstract class Request<T> implements RecycleAble {
     }
 
     class IR {
-        ApiResultListener<T> listener;
+        ApiResultListener<T> l;
 
         public IR(ApiResultListener<T> listener) {
-            this.listener = listener;
+            this.l = listener;
         }
 
         public void setListener(ApiResultListener<T> listener) {
-            this.listener = listener;
+            this.l = listener;
         }
 
         public void http() {
@@ -182,6 +182,9 @@ public abstract class Request<T> implements RecycleAble {
                          */
                         @Override
                         public T apply(String s) {
+                            if (l == null) {
+                                return null;
+                            }
                             T result = gson.fromJson(s, cls);
                             return result;
                         }
@@ -194,15 +197,15 @@ public abstract class Request<T> implements RecycleAble {
 
                         @Override
                         public void onNext(T value) {
-                            if (listener != null) {
-                                listener.onRequestResultSucc(value);
+                            if (l != null) {
+                                l.onRequestResultSucc(value);
                             }
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            if (listener != null) {
-                                listener.onRequestResultFailed(e);
+                            if (l != null) {
+                                l.onRequestResultFailed(e);
                             }
                         }
 
