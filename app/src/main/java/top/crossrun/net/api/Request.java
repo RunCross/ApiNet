@@ -18,6 +18,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
 import top.crossrun.net.api.param.BaseParam;
 import top.crossrun.net.interf.RecycleAble;
+import top.crossrun.net.interf.RecycleAbleObserve;
 import top.crossrun.net.listener.ApiResultListener;
 
 public abstract class Request<T> implements RecycleAble {
@@ -53,6 +54,11 @@ public abstract class Request<T> implements RecycleAble {
 
     public Request<T> registerRecycle(CompositeRecycle cr) {
         cr.add(this);
+        return this;
+    }
+
+    public Request<T> registerRecycle(RecycleAbleObserve c) {
+        c.registerRecycle(this);
         return this;
     }
 
