@@ -185,6 +185,9 @@ public abstract class Request<T> implements RecycleAble {
                             if (l == null) {
                                 return null;
                             }
+                            if (cls.getClass().equals(String.class)){
+                                return (T) s;
+                            }
                             T result = gson.fromJson(s, cls);
                             return result;
                         }
