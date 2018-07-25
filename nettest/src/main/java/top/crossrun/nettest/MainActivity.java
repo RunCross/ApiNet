@@ -5,12 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
-import java.io.File;
-
 import top.crossrun.net.api.ApiNet;
 import top.crossrun.net.api.CompositeRecycle;
 import top.crossrun.net.api.param.FileWithJSONParam;
-import top.crossrun.net.api.param.FileWithKVParam;
 import top.crossrun.net.api.param.KVStringParam;
 import top.crossrun.net.api.param.KVUrlParam;
 import top.crossrun.net.listener.ApiResultListener;
@@ -118,20 +115,19 @@ public class MainActivity extends AppCompatActivity {
 //                .http();
 //        ApiNet.upload().http();
 
-        ApiNet.post(NotifyResult.class)
-                .setParam(new KVStringParam()
-                        .setUrl("http://10.70.148.34:9393/notify")
-                        .addParam("type", "来电")
-                        .addParam("msg", "sdf-sdfsdafasd"))
-                .setApiResultListener(new ApiResultListener<NotifyResult>() {
+        ApiNet.post(String.class)
+                .setParam(new KVUrlParam()
+                        .setUrl("http://igotone.zj.chinamobile.com:88/ZJMOAPortalNew/portal/index.do?data=ECDB7D5A6EFBFC7A7804D8A30BE803062409D17B746798EAB848A9A482DFD620")
+                        .addParam("data", "ECDB7D5A6EFBFC7A7804D8A30BE803062409D17B746798EAB848A9A482DFD620"))
+                .setApiResultListener(new ApiResultListener<String>() {
                     @Override
-                    public void onRequestResultSucc(NotifyResult result) {
-                        Log.e("top.crossrun", result.message);
+                    public void onRequestResultSucc(String result) {
+                        Log.e("top.crossrun", result);
                     }
 
                     @Override
                     public void onRequestResultFailed(Throwable errMsg) {
-
+                        Log.e("top.crossrun", errMsg.toString());
                     }
                 })
                 .registerRecycle(compositeRecycle)

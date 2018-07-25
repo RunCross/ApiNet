@@ -161,7 +161,9 @@ public abstract class Request<T> implements RecycleAble {
         cancel();
 //        closeHttpCall();
         listener = null;
-        param.recycle();
+        if (param != null) {
+            param.recycle();
+        }
         param = null;
     }
 
@@ -193,7 +195,7 @@ public abstract class Request<T> implements RecycleAble {
                             if (l == null) {
                                 return null;
                             }
-                            if ("java.lang.String".equals(cls.getName())){
+                            if ("java.lang.String".equals(cls.getName())) {
                                 return (T) s;
                             }
                             T result = gson.fromJson(s, cls);
