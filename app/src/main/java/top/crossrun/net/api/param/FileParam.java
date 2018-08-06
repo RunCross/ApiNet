@@ -3,7 +3,6 @@ package top.crossrun.net.api.param;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import okhttp3.RequestBody;
 
 public abstract class FileParam extends BaseParam {
 

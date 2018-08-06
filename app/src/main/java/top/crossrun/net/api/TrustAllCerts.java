@@ -30,6 +30,7 @@ public class TrustAllCerts implements X509TrustManager {
             sc.init(null, new TrustManager[]{new TrustAllCerts()}, new SecureRandom());
             ssfFactory = sc.getSocketFactory();
         } catch (Exception var2) {
+            var2.printStackTrace();
         }
 
         return ssfFactory;

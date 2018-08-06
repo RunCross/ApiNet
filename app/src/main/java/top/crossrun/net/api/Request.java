@@ -1,7 +1,5 @@
 package top.crossrun.net.api;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 
 import java.util.HashMap;

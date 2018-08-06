@@ -23,7 +23,7 @@ public class ApiNet{
     }
 
     public static  <T>PostRequest<T> post(Class<T> s) {
-       return new PostRequest<T>(s);
+       return new PostRequest<>(s);
     }
 
 //    public static <T>ApiNet<T> create(Class<T> s){
@@ -33,11 +33,11 @@ public class ApiNet{
 
     @SuppressWarnings("unchecked")
     public static <T>Request<T> get(Class<T> s) {
-        return new GetRequest<T>(s);
+        return new GetRequest<>(s);
     }
 
    public static <T>UploadRequest<T> upload(Class<T> s){
-        return new UploadRequest<T>(s);
+        return new UploadRequest<>(s);
    }
 
     public static class Builder {
