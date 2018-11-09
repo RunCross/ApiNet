@@ -5,10 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
-import java.net.URLEncoder;
-
 import top.crossrun.net.api.ApiNet;
 import top.crossrun.net.api.CompositeRecycle;
+import top.crossrun.net.api.DownloadProgressRequestListener;
 import top.crossrun.net.api.param.KVStringParam;
 import top.crossrun.net.api.param.KVUrlParam;
 import top.crossrun.net.listener.ApiResultListener;
@@ -25,7 +24,39 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         text = (TextView) findViewById(R.id.text);
         compositeRecycle = new CompositeRecycle();
-//
+
+//        post();
+//post2();
+        download();
+
+    }
+
+    private void download() {
+
+        ApiNet.download()
+                .setDownloadPathAndName("/sdcard/test/test.png", true)
+                .setDownloadRequestListener(new DownloadProgressRequestListener() {
+                    @Override
+                    public void onDownloadProgress(long total, long progress) {
+                        Log.e("top.crossrun", String.format("%d,%d", total, progress));
+                    }
+                })
+                .setParam(new KVUrlParam().setUrl(""))
+                .setApiResultListener(new ApiResultListener<String>() {
+                    @Override
+                    public void onRequestResultSucc(String result) {
+                        Log.e("top.crossrun", result);
+                    }
+
+                    @Override
+                    public void onRequestResultFailed(Throwable errMsg) {
+                        Log.e("top.crossrun", errMsg.toString());
+                    }
+                })
+                .http();
+    }
+
+    public void post() {
         ApiNet.post(String.class)
                 .setParam(new KVStringParam()
                         .setUrl("http://61.175.223.170/law/client/enterprisepatrol.do")
@@ -53,25 +84,27 @@ public class MainActivity extends AppCompatActivity {
                         }
                 )
                 .http();
-//        ApiNet.post(String.class)
-//                .setParam(new KVUrlParam()
-//                        .setUrl("http://igotone.zj.chinamobile.com:88/ZJMOAPortalNew/portal/index.do?data=ECDB7D5A6EFBFC7A7804D8A30BE803062409D17B746798EAB848A9A482DFD620")
-//                        .addParam("data", "ECDB7D5A6EFBFC7A7804D8A30BE803062409D17B746798EAB848A9A482DFD620"))
-//                .setApiResultListener(new ApiResultListener<String>() {
-//                    @Override
-//                    public void onRequestResultSucc(String result) {
-//                        Log.e("top.crossrun", result);
-//                    }
-//
-//                    @Override
-//                    public void onRequestResultFailed(Throwable errMsg) {
-//                        Log.e("top.crossrun", errMsg.toString());
-//                    }
-//                })
-//                .registerRecycle(compositeRecycle)
-//                .http();
+    }
 
-//
+    public void post2() {
+        ApiNet.post(String.class)
+                .setParam(new KVUrlParam()
+                        .setUrl("http://igotone.zj.chinamobile.com:88/ZJMOAPortalNew/portal/index.do?data=ECDB7D5A6EFBFC7A7804D8A30BE803062409D17B746798EAB848A9A482DFD620")
+                        .addParam("data", "ECDB7D5A6EFBFC7A7804D8A30BE803062409D17B746798EAB848A9A482DFD620"))
+                .setApiResultListener(new ApiResultListener<String>() {
+                    @Override
+                    public void onRequestResultSucc(String result) {
+                        Log.e("top.crossrun", result);
+                    }
+
+                    @Override
+                    public void onRequestResultFailed(Throwable errMsg) {
+                        Log.e("top.crossrun", errMsg.toString());
+                    }
+                })
+                .registerRecycle(compositeRecycle)
+                .http();
+
 
     }
 
