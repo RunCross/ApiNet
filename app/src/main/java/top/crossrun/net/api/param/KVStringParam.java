@@ -1,5 +1,7 @@
 package top.crossrun.net.api.param;
 
+import android.util.Log;
+
 import java.net.URLEncoder;
 import java.util.Set;
 
@@ -31,10 +33,15 @@ public class KVStringParam extends BaseParam {
                 keys) {
             sb.append(key);
             sb.append("=");
+            Object value = values.get(key);
+            if (value==null){
+                Log.e("top.crossrun",key+"'s valus is null");
+                continue;
+            }
             if (1 == encode) {
-                sb.append(URLEncoder.encode(values.get(key).toString()));
+                sb.append(URLEncoder.encode(value.toString()));
             } else {
-                sb.append(values.get(key).toString());
+                sb.append(value.toString());
             }
             sb.append("&");
         }
