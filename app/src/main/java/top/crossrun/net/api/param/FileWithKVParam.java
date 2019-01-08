@@ -1,5 +1,7 @@
 package top.crossrun.net.api.param;
 
+import android.util.Log;
+
 import java.util.Set;
 
 import okhttp3.MediaType;
@@ -22,7 +24,12 @@ public class FileWithKVParam extends FileParam {
             Set<String> keySet = values.keySet();
             for (String str :
                     keySet) {
-                builder.addFormDataPart(str, values.get(str).toString());
+                Object value = values.get(str);
+                if (value==null){
+                    Log.e("top.crossrun",str+"'s valus is null");
+                    continue;
+                }
+                builder.addFormDataPart(str, value.toString());
             }
         }
 
