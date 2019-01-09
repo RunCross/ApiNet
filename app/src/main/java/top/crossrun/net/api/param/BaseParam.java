@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.RequestBody;
-import top.crossrun.net.interf.RecycleAble;
+import top.crossrun.base.recycle.RecycleAble;
 
 public abstract class BaseParam implements RecycleAble {
     String url;
