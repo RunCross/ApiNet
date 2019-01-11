@@ -11,10 +11,9 @@ import okhttp3.Call;
 import okhttp3.Interceptor;
 import retrofit2.Retrofit;
 
-public class ApiNet{
+public class ApiNet {
 
     /**
-     *
      * @param builder
      */
     public static void init(Builder builder) {
@@ -22,23 +21,27 @@ public class ApiNet{
         NetInner.ins = new ApiManager(builder);
     }
 
-    public static  <T>PostRequest<T> post(Class<T> s) {
-       return new PostRequest<>(s);
+    public static <T> PostRequest<T> post(Class<T> s) {
+        return new PostRequest<>(s);
     }
 
-//    public static <T>ApiNet<T> create(Class<T> s){
-//        ApiNet<T> a = new ApiNet<>();
-//        return a;
-//    }
-
-    @SuppressWarnings("unchecked")
-    public static <T>Request<T> get(Class<T> s) {
+    public static <T> Request<T> get(Class<T> s) {
         return new GetRequest<>(s);
     }
 
-   public static <T>UploadRequest<T> upload(Class<T> s){
+    public static <T> UploadRequest<T> upload(Class<T> s) {
         return new UploadRequest<>(s);
-   }
+    }
+
+    /**
+     *
+     * @param path 最终保存路径
+     * @param deleteOnExist true=存在则删除,false=存在则忽略下载
+     * @return
+     */
+    public static DownloadRequest download(String path,boolean deleteOnExist) {
+        return new DownloadRequest(path,deleteOnExist);
+    }
 
     public static class Builder {
         String rootUrl;
@@ -94,8 +97,8 @@ public class ApiNet{
             return this;
         }
 
-        public Builder addInterceptor(Interceptor  interceptor){
-            if (interceptors==null){
+        public Builder addInterceptor(Interceptor interceptor) {
+            if (interceptors == null) {
                 interceptors = new ArrayList<>();
             }
             interceptors.add(interceptor);
@@ -124,11 +127,11 @@ public class ApiNet{
 
     }
 
-    protected static Retrofit getInstance(){
+    protected static Retrofit getInstance() {
         return NetInner.ins.getInstance();
     }
 
-    protected static Call newCall(okhttp3.Request request){
+    protected static Call newCall(okhttp3.Request request) {
         return NetInner.ins.newCall(request);
     }
 
