@@ -33,6 +33,7 @@ public class DownloadRequest extends Request<String> {
             if (listener != null) {
                 listener.onRequestResultSucc(path);
             }
+            return;
         } else if (file.exists() && deleteOnExist) {
             file.delete();
         }
