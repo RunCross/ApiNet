@@ -55,7 +55,7 @@ public class DownloadRequest extends Request<String> {
                 int len = 0;
                 FileOutputStream fos = null;
                 File file = new File(path);
-                isExistDir(file.getAbsolutePath());
+                isExistDir(file.getParentFile().getAbsolutePath());
                 try {
                     is = response.body().byteStream();
                     long total = response.body().contentLength();
