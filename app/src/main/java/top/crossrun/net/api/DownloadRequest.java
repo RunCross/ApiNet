@@ -4,12 +4,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import io.reactivex.Observable;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-import top.crossrun.net.listener.ApiResultListener;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import top.crossrun.net.listener.OnDownloadProcessListener;
 
 public class DownloadRequest extends Request<String> {
     String path;
@@ -23,48 +26,30 @@ public class DownloadRequest extends Request<String> {
 
     @Override
     public Observable<String> getRequestObservable() {
-        return null;
-    }
-
-    @Override
-    public void http() {
-        File file = new File(path);
-        if (file.exists() && !deleteOnExist) {
-            if (listener != null) {
-                listener.onRequestResultSucc(path);
-            }
-            return;
-        } else if (file.exists() && deleteOnExist) {
-            file.delete();
-        }
-        okhttp3.Request request = getRequestBuilder().url(param.getUrl())//地址
-                .get()//添加请求体
-                .build();
-        createCall(request).enqueue(new Callback() {
+        return Observable.create(new ObservableOnSubscribe<String>() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                // 下载失败
-                if (listener != null) {
-                    listener.onRequestResultFailed(e);
-                }
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                InputStream is = null;
+            public void subscribe(ObservableEmitter<String> e) throws Exception {
+                HttpURLConnection connection = (HttpURLConnection) new URL(param.getUrl()).openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream is = connection.getInputStream();
                 byte[] buf = new byte[2048];
                 int len = 0;
+                long total = 0, sum = 0;
                 FileOutputStream fos = null;
                 File file = new File(path);
                 isExistDir(file.getParentFile().getAbsolutePath());
                 try {
-                    is = response.body().byteStream();
-                    long total = response.body().contentLength();
+
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                        total = connection.getContentLengthLong();
+                    } else {
+                        total = connection.getContentLength();
+                    }
                     if (!file.exists()) {
                         file.createNewFile();
                     }
                     fos = new FileOutputStream(file);
-                    long sum = 0;
                     OnDownloadProcessListener processListener = null;
                     if (listener != null && listener instanceof OnDownloadProcessListener) {
                         processListener = (OnDownloadProcessListener) listener;
@@ -80,27 +65,74 @@ public class DownloadRequest extends Request<String> {
                     }
                     fos.flush();
                     // 下载完成
-                    if (listener != null) {
-                        listener.onRequestResultSucc(path);
-                    }
-                } catch (Exception e) {
-                    if (listener != null) {
-                        listener.onRequestResultFailed(e);
-                    }
+                    e.onNext(path);
+                } catch (Exception ex1) {
+                    throw ex1;
                 } finally {
                     try {
                         if (is != null)
                             is.close();
-                    } catch (IOException e) {
+                    } catch (IOException ex2) {
                     }
                     try {
                         if (fos != null)
                             fos.close();
-                    } catch (IOException e) {
+                    } catch (IOException ex3) {
                     }
                 }
             }
         });
+    }
+
+    @Override
+    public void http() {
+        File file = new File(path);
+        if (file.exists() && !deleteOnExist) {
+            if (listener != null) {
+                Observable
+                        .create(new ObservableOnSubscribe<String>() {
+                            /**
+                             * Called for each Observer that subscribes.
+                             *
+                             * @param e the safe emitter instance, never null
+                             * @throws Exception on error
+                             */
+                            @Override
+                            public void subscribe(ObservableEmitter<String> e) throws Exception {
+                                e.onNext(path);
+                            }
+                        })
+                        .observeOn(responseScheduler)
+                        .subscribeOn(requestScheduler)
+                        .subscribe(new Observer<String>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(String value) {
+                                if (listener != null) {
+                                    listener.onRequestResultSucc(path);
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+            }
+            return;
+        } else if (file.exists() && deleteOnExist) {
+            file.delete();
+        }
+        super.http();
     }
 
     /**
@@ -114,14 +146,5 @@ public class DownloadRequest extends Request<String> {
         if (!dirFile.exists()) {
             dirFile.mkdirs();
         }
-    }
-
-
-    public abstract static class OnDownloadProcessListener extends ApiResultListener<String> {
-        /**
-         * @param progress 下载进度
-         */
-        public abstract void onRequestProcess(int progress);
-
     }
 }

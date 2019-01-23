@@ -1,7 +1,8 @@
 package top.crossrun.net.listener;
 
-public abstract class  ApiResultListener<T> {
+public interface ApiResultListener<T> {
 
-    public abstract void onRequestResultSucc(T result);
-    public abstract void onRequestResultFailed(Throwable errMsg);
+    void onRequestResultSucc(T result);
+
+    void onRequestResultFailed(Throwable errMsg);
 }

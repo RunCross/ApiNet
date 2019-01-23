@@ -7,10 +7,8 @@ import android.util.Log;
 import android.widget.TextView;
 
 import top.crossrun.net.api.ApiNet;
-import top.crossrun.net.api.DownloadRequest;
-import top.crossrun.net.api.param.KVStringParam;
 import top.crossrun.net.api.param.KVUrlParam;
-import top.crossrun.net.listener.ApiResultListener;
+import top.crossrun.net.listener.OnDownloadProcessListener;
 
 public class MainActivity extends AppCompatActivity {
     TextView text;
@@ -25,8 +23,8 @@ public class MainActivity extends AppCompatActivity {
         Log.e("top.crossrun",path);
 
         ApiNet.download(path, true)
-                .setParam(new KVUrlParam().setUrl("http://192.168.31.165:9393/apk/%E5%89%91%E4%B8%89%E7%AD%94%E9%A2%98%E5%99%A8.apk"))
-                .setApiResultListener(new DownloadRequest.OnDownloadProcessListener() {
+                .setParam(new KVUrlParam().setUrl("http://192.168.137.1:9393/%E5%AE%B6%E8%B0%B1.txt"))
+                .setApiResultListener(new OnDownloadProcessListener() {
                     @Override
                     public void onRequestResultSucc(String result) {
                         Log.e("top.crossrun", result);
